@@ -138,7 +138,7 @@ stroke.Thickness = 1.2
 
 -- Title
 local titleLabel = Instance.new("TextLabel")
-titleLabel.Text = "CHANGE THIS BITCH"
+titleLabel.Text = "LUGER SCRIPTS"
 titleLabel.Size = UDim2.new(1, 0, 0, 25)
 titleLabel.BackgroundTransparency = 1
 titleLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
