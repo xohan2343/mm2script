@@ -1,0 +1,108 @@
+-- GUI principal
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "TradeScamUI"
+gui.ResetOnSpawn = false
+
+-- Frame principal (altura reduzida)
+local main = Instance.new("Frame", gui)
+main.Name = "MainFrame"
+main.Size = UDim2.new(0, 300, 0, 280) -- menor
+main.Position = UDim2.new(0.35, 0, 0.35, 0)
+main.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+main.BorderSizePixel = 0
+Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
+local stroke = Instance.new("UIStroke", main)
+stroke.Thickness = 2
+stroke.Color = Color3.fromRGB(0, 255, 0)
+
+-- Título fixo no topo
+local title = Instance.new("TextLabel", main)
+title.Size = UDim2.new(1, 0, 0, 40)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "TRADE SCAM"
+title.TextColor3 = Color3.fromRGB(0, 255, 0)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 22
+
+-- Frame para os botões
+local buttonHolder = Instance.new("Frame", main)
+buttonHolder.Size = UDim2.new(1, 0, 1, -40)
+buttonHolder.Position = UDim2.new(0, 0, 0, 40)
+buttonHolder.BackgroundTransparency = 1
+
+-- Layout dos botões (padding menor)
+local layout = Instance.new("UIListLayout", buttonHolder)
+layout.Padding = UDim.new(0, 5)
+layout.FillDirection = Enum.FillDirection.Vertical
+layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+layout.VerticalAlignment = Enum.VerticalAlignment.Top
+
+-- Função para criar botões
+local function createButton(text, color)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0.9, 0, 0, 40)
+    button.Text = text
+    button.BackgroundColor3 = color
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Font = Enum.Font.Gotham
+    button.TextSize = 18
+    Instance.new("UICorner", button).CornerRadius = UDim.new(0, 8)
+    return button
+end
+
+-- Botões
+local freeze = createButton("Freeze Trade (OFF)", Color3.fromRGB(130, 140, 255))
+local force = createButton("Force Accept", Color3.fromRGB(100, 170, 255))
+local esp = createButton("ESP On", Color3.fromRGB(90, 90, 255))
+local close = createButton("Close", Color3.fromRGB(200, 50, 50))
+
+freeze.Parent = buttonHolder
+force.Parent = buttonHolder
+esp.Parent = buttonHolder
+close.Parent = buttonHolder
+
+-- Lógica dos botões
+local freezeEnabled = false
+freeze.MouseButton1Click:Connect(function()
+    freezeEnabled = not freezeEnabled
+    freeze.Text = freezeEnabled and "Freeze Trade (ON)" or "Freeze Trade (OFF)"
+end)
+
+force.MouseButton1Click:Connect(function()
+    -- lógica de force accept
+end)
+
+esp.MouseButton1Click:Connect(function()
+    -- lógica de ESP
+end)
+
+close.MouseButton1Click:Connect(function()
+    gui:Destroy()
+end)
+
+-- Drag do frame
+local dragging, dragInput, dragStart, startPos
+main.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = main.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then dragging = false end
+        end)
+    end
+end)
+
+main.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then dragInput = input end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
